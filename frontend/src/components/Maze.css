@@ -1,0 +1,60 @@
+:root {
+  --square-size: 20px;
+  --triangle-long: 15px;
+  --triangle-short: 10px;
+}
+
+.maze-cell {
+  position: relative;
+  width: var(--square-size);
+  height: var(--square-size);
+}
+
+.maze-cell-north {
+  border-top: 3px solid black;
+}
+
+.maze-cell-east {
+  border-right: 3px solid black;
+}
+
+.maze-cell-south {
+  border-bottom: 3px solid black;
+}
+
+.maze-cell-west {
+  border-left: 3px solid black;
+}
+
+.start {
+  background-color: green;
+}
+
+.goal {
+  background-color: red;
+}
+
+.robot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: var(--square-size);
+  height: var(--square-size);
+  background-color: orange;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.robot-triangle {
+  content: "";
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0;
+  border-bottom-width: var(--triangle-long);
+  border-left-width: var(--triangle-short);
+  border-right-width: var(--triangle-short);
+  border-color: transparent transparent darkred transparent;
+}

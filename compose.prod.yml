@@ -1,0 +1,73 @@
+services:
+  backend:
+    image: registry.doit.wisc.edu/cdis/cs/courses/cs506/fa2023/t_16/zigzag/backend:latest
+    restart: always
+    command: sh run_prod.sh
+    environment:
+      DEBUG: "false"
+    volumes:
+      - media:/media
+      - static:/static
+    env_file:
+      - .env
+    depends_on:
+      - db
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+  db:
+    image: mysql
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - db:/var/lib/mysql
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+  frontend:
+    image: registry.doit.wisc.edu/cdis/cs/courses/cs506/fa2023/t_16/zigzag/frontend:latest
+    restart: always
+    command: serve -s build
+    depends_on:
+      - backend
+      - simulation-manager
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+  simulation-manager:
+    image: registry.doit.wisc.edu/cdis/cs/courses/cs506/fa2023/t_16/zigzag/simulation-manager:latest
+    privileged: true
+    restart: always
+    stdin_open: true
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+  nginx:
+    image: nginx
+    volumes:
+      - ./nginx/default.prod.conf:/etc/nginx/conf.d/default.conf
+      - media:/media
+      - static:/static
+      - /etc/letsencrypt:/cert
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - backend
+      - frontend
+    labels:
+      com.centurylinklabs.watchtower.enable: true
+      com.centurylinklabs.watchtower.depends-on: "zigzag-frontend-1,zigzag-backend-1"
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./docker_auth.json:/config.json
+    command: --debug --http-api-update
+    env_file:
+      - .env
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
+    ports:
+      - 8080:8080
+volumes:
+  db: { }
+  media: { }
+  static: { }
