@@ -1,0 +1,7 @@
+.idea
+venv
+.DS_Store
+.coverage
+.hypothesis
+htmlcov
+__pycache__
