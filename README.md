@@ -22,3 +22,6 @@ by using the `-d` argument.
 
 ## Stopping the project
 To stop the project use the command `docker-compose down`.
+
+## Project detail
+
